@@ -1,0 +1,12 @@
+{
+  "apps": [{
+    "name": "mpnote",
+    "script": "build/main.js",
+    "watch": false,
+    "env": {
+      "NODE_ENV": "production"
+    },
+    "exec_mode": "cluster",
+    "instances": 0
+  }]
+}

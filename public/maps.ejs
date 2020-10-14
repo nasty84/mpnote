@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>MPnote 모바일 청첩장</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no">
+    <!-- <script type="text/javascript" src="https://openapi.map.naver.com/openapi/v3/maps.js?clientId=P5zQEA8giiDgTNi8AQxP&submodules=geocoder"></script> -->
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/latest/css/bootstrap.min.css">
+
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/latest/css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="/static/css/maps.css" />
+    <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=21d17943152d5e96a3a3263079b326f8&libraries=services"></script>
+
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  </head>
+  <body>
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="map_wrap col-md-12">
+            <div id="map" style="width:100%;height:100%;position:relative;overflow:hidden;"></div>
+
+            <div id="menu_wrap" class="bg_white">
+                <div class="option">
+                    <div>
+                        <form onsubmit="searchPlaces(); return false;">
+                            키워드 : <input type="text" value="제주KAL호텔" id="keyword" size="15">
+                            <button type="submit">검색하기</button>
+                        </form>
+                    </div>
+                </div>
+                <hr>
+                <ul id="placesList"></ul>
+                <div id="pagination"></div>
+            </div>
+          </div>
+          <form class="form-horizontal">
+            <div class="form-group">
+              <label for="location_addr" class="col-sm-2 control-label">주소</label>
+              <div class="col-sm-8">
+                <input type="text" class="form-control" value="" id="location_addr" readonly="readonly" />
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="" class="col-sm-2 control-label">위치</label>
+              <div class="col-sm-4">
+                <input type="text" class="form-control" value="" id="location_lon" readonly="readonly" />
+              </div>
+              <div class="col-sm-4">
+                <input type="text" class="form-control" value="" id="location_lat" readonly="readonly" />
+              </div>
+            </div>
+            <div class="form-group">
+              <div class="col-sm-offset-2 col-sm-10">
+                <a href="#" class="btn btn-primary" id="btnSave">저장</a>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <script type="text/javascript" src="/static/js/maps.js"></script>
+  </body>
+</html>
