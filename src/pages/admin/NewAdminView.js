@@ -3,7 +3,8 @@ import {connect} from 'react-redux';
 import { browserHistory } from 'react-router';
 import Moment from 'react-moment';
 import Datetime from 'react-datetime';
-import {Editor, EditorState, RichUtils, ContentState, convertFromHTML} from 'draft-js';
+import {Editor, EditorState, RichUtils, ContentState} from 'draft-js';
+import {convertFromHTML} from 'draft-convert';
 import {stateToHTML} from 'draft-js-export-html';
 
 import { fetchCardAdminData, uploadComplete, updateCardData, createCardData } from './AdminViewAction';
@@ -80,18 +81,15 @@ class NewAdminView extends Component{
     if(nextProps.adminview.redirectId && nextProps.adminview.redirectId.result!==0){
       document.location.href='/admin/view/'+nextProps.adminview.redirectId.result;
     }else{
-      let blocksFromHTML, content;
+      let blocksFromHTML;
       if(nextProps.adminview.description && nextProps.adminview.description !== ''){
-        blocksFromHTML = convertFromHTML(nextProps.adminview.description);
-        content = ContentState.createFromBlockArray(blocksFromHTML);
+        blocksFromHTML = convertFromHTML(nextProps.adminview.description.replace(/<\p><br><\/p>/gi,'<p></p>'));
       }else{
         blocksFromHTML = convertFromHTML('<p></p>');
-        content = ContentState.createFromBlockArray(blocksFromHTML);
       }
       nextProps.adminview.marrageDate = new Date(nextProps.adminview.marrageDate);
-
       this.setState({
-        editorState: EditorState.createWithContent(content),
+        editorState: EditorState.createWithContent(blocksFromHTML),
         data: nextProps.adminview,
         isPoppedOut: false
       });
