@@ -1,6 +1,6 @@
 import {Map, List} from 'immutable';
 import {browserHistory} from 'react-router';
-import { RECEIVE_CARD_ADMIN_DATA_COMPLETE, RECEIVE_CARD_ADMIN_DATA_ERROR, UPLOAD_COMPLETE,CARD_DATA_UPDATE_ERROR, CARD_DATA_UPDATE_COMPLETE  } from '../../constants/ActionTypes';
+import { RECEIVE_CARD_ADMIN_DATA_COMPLETE, RECEIVE_CARD_ADMIN_DATA_ERROR, UPLOAD_COMPLETE,CARD_DATA_UPDATE_ERROR, CARD_DATA_UPDATE_COMPLETE,SORT_PHOTO_LIST  } from '../../constants/ActionTypes';
 
 const adminViewInitialState ={
 
@@ -24,6 +24,24 @@ export default function AdminViewReducer(state = adminViewInitialState, action =
                   },[]);
       newObj.uploadedPhoto = uniq;
       return newObj;
+    case SORT_PHOTO_LIST:
+      let newObjs = Object.assign({}, state);
+      console.log(action);
+      if(action.opt === 'asc'){
+        newObjs.uploadedPhoto.sort(function(a, b){
+          const splitA = a.split('/')[4];
+          const splitB = b.split('/')[4];
+          return splitA < splitB ? -1 : splitA > splitB ? 1 : 0;
+        });
+      }else{
+        newObjs.uploadedPhoto.sort(function(a, b){
+          const splitA = a.split('/')[4];
+          const splitB = b.split('/')[4];
+          return splitA > splitB ? -1 : splitA < splitB ? 1 : 0;
+        });
+      }
+      // newObjs.uploadedPhoto = [];
+      return newObjs;
     case CARD_DATA_UPDATE_COMPLETE:
       if(action.isFirst===false){
         alert('저장완료');

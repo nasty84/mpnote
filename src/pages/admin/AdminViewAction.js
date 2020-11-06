@@ -75,3 +75,7 @@ export function createCardData(isFst, data){
             })
   }
 }
+
+export function sortPhotoList(opt) {
+  return { type: 'SORT_PHOTO_LIST', opt:opt}
+}

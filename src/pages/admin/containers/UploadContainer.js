@@ -20,13 +20,22 @@ class UploadContainer extends Component{
 				});
 		});
   }
-
+  
   render(){
-
+    const sortAsc = () => {
+      const {sortPhotos} = this.props;
+      sortPhotos('asc');
+    }
+    const sortDesc = () => {
+      const {sortPhotos} = this.props;
+      sortPhotos('desc');
+    }
     return(
       <div className="col-md-12">
+        <button className="btn btn-primary" onClick={sortAsc}>오름</button>
+        <button className="btn btn-primary" onClick={sortDesc}>내림</button>
         <Dropzone onDrop={this.onDrop.bind(this)} className="box_upload">
-          <div className="desc_upload">이미지 파일을 이곳에 끌어 넣거나<br/>클릭하여 파일을 선택 해 주세요</div>
+          <div className="desc_upload">이미지 파일을 이곳에 끌어 넣거나<br/>클릭하여 파일을 선택 해 주세요.</div>
         </Dropzone>
       </div>
     )

@@ -7,7 +7,7 @@ import {Editor, EditorState, RichUtils, ContentState} from 'draft-js';
 import {convertFromHTML} from 'draft-convert';
 import {stateToHTML} from 'draft-js-export-html';
 
-import { fetchCardAdminData, uploadComplete, updateCardData, createCardData } from './AdminViewAction';
+import { fetchCardAdminData, uploadComplete, updateCardData, createCardData, sortPhotoList } from './AdminViewAction';
 import ImageListContainer from './containers/ImageListContainer';
 import UploadContainer from './containers/UploadContainer';
 import UploadImageItem from '../../components/UploadImageItem';
@@ -221,7 +221,7 @@ class NewAdminView extends Component{
     this.setState(nextState);
   }
   render(){
-    const {adminview, _uploadComplete} = this.props;
+    const {adminview, _uploadComplete, _sortPhotos} = this.props;
     const card_id_readable = adminview.card_id ? true : false;
     return(
       <div>
@@ -466,7 +466,7 @@ class NewAdminView extends Component{
               </div>
             </div>
             <div className="col-md-4 wrap_uploader">
-              <UploadContainer onUploadComplete={_uploadComplete} cardId={adminview.card_id} />
+              <UploadContainer onUploadComplete={_uploadComplete} cardId={adminview.card_id} sortPhotos={_sortPhotos} />
               <div className="col-md-12">
                 {
                 adminview.uploadedPhoto.map((item, index)=>{
@@ -490,7 +490,8 @@ let mapDispatchToProps = (dispatch) =>{
     _fetchCardAdminData: (card_id)=>dispatch(fetchCardAdminData(card_id)),
     _uploadComplete: (card_id, imageUrl)=>dispatch(uploadComplete(card_id, imageUrl)),
     _update:(card_id, data) => dispatch(updateCardData(card_id, data)),
-    _create:(isFst, data) => dispatch(createCardData(isFst, data))
+    _create:(isFst, data) => dispatch(createCardData(isFst, data)),
+    _sortPhotos:(opt) => dispatch(sortPhotoList(opt))
   }
 }
 let mapStateToProps = (state) => {
