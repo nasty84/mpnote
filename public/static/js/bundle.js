@@ -12828,6 +12828,7 @@ var RECEIVE_CARD_ADMIN_DATA_ERROR = exports.RECEIVE_CARD_ADMIN_DATA_ERROR = 'REC
 var UPLOAD_COMPLETE = exports.UPLOAD_COMPLETE = 'UPLOAD_COMPLETE';
 var CARD_DATA_UPDATE_COMPLETE = exports.CARD_DATA_UPDATE_COMPLETE = 'CARD_DATA_UPDATE_COMPLETE';
 var CARD_DATA_UPDATE_ERROR = exports.CARD_DATA_UPDATE_ERROR = 'CARD_DATA_UPDATE_ERROR';
+var SORT_PHOTO_LIST = exports.SORT_PHOTO_LIST = 'SORT_PHOTO_LIST';
 
 /***/ }),
 /* 28 */
@@ -46854,7 +46855,8 @@ var NewAdminView = function (_Component) {
 
       var _props2 = this.props,
           adminview = _props2.adminview,
-          _uploadComplete = _props2._uploadComplete;
+          _uploadComplete = _props2._uploadComplete,
+          _sortPhotos = _props2._sortPhotos;
 
       var card_id_readable = adminview.card_id ? true : false;
       return _react2.default.createElement(
@@ -47295,7 +47297,7 @@ var NewAdminView = function (_Component) {
             _react2.default.createElement(
               'div',
               { className: 'col-md-4 wrap_uploader' },
-              _react2.default.createElement(_UploadContainer2.default, { onUploadComplete: _uploadComplete, cardId: adminview.card_id }),
+              _react2.default.createElement(_UploadContainer2.default, { onUploadComplete: _uploadComplete, cardId: adminview.card_id, sortPhotos: _sortPhotos }),
               _react2.default.createElement(
                 'div',
                 { className: 'col-md-12' },
@@ -47326,6 +47328,9 @@ var mapDispatchToProps = function mapDispatchToProps(dispatch) {
     },
     _create: function _create(isFst, data) {
       return dispatch((0, _AdminViewAction.createCardData)(isFst, data));
+    },
+    _sortPhotos: function _sortPhotos(opt) {
+      return dispatch((0, _AdminViewAction.sortPhotoList)(opt));
     }
   };
 };
@@ -49780,6 +49785,7 @@ exports.fetchCardAdminData = fetchCardAdminData;
 exports.uploadComplete = uploadComplete;
 exports.updateCardData = updateCardData;
 exports.createCardData = createCardData;
+exports.sortPhotoList = sortPhotoList;
 
 var _ActionTypes = __webpack_require__(27);
 
@@ -49862,6 +49868,10 @@ function createCardData(isFst, data) {
   };
 }
 
+function sortPhotoList(opt) {
+  return { type: 'SORT_PHOTO_LIST', opt: opt };
+}
+
 /***/ }),
 /* 365 */
 /***/ (function(module, exports, __webpack_require__) {
@@ -49905,6 +49915,24 @@ function AdminViewReducer() {
       }, []);
       newObj.uploadedPhoto = uniq;
       return newObj;
+    case _ActionTypes.SORT_PHOTO_LIST:
+      var newObjs = Object.assign({}, state);
+      console.log(action);
+      if (action.opt === 'asc') {
+        newObjs.uploadedPhoto.sort(function (a, b) {
+          var splitA = a.split('/')[4];
+          var splitB = b.split('/')[4];
+          return splitA < splitB ? -1 : splitA > splitB ? 1 : 0;
+        });
+      } else {
+        newObjs.uploadedPhoto.sort(function (a, b) {
+          var splitA = a.split('/')[4];
+          var splitB = b.split('/')[4];
+          return splitA > splitB ? -1 : splitA < splitB ? 1 : 0;
+        });
+      }
+      // newObjs.uploadedPhoto = [];
+      return newObjs;
     case _ActionTypes.CARD_DATA_UPDATE_COMPLETE:
       if (action.isFirst === false) {
         alert('저장완료');
@@ -50063,10 +50091,15 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 var UploadContainer = function (_Component) {
   _inherits(UploadContainer, _Component);
 
-  function UploadContainer() {
+  function UploadContainer(props) {
     _classCallCheck(this, UploadContainer);
 
-    return _possibleConstructorReturn(this, (UploadContainer.__proto__ || Object.getPrototypeOf(UploadContainer)).apply(this, arguments));
+    var _this = _possibleConstructorReturn(this, (UploadContainer.__proto__ || Object.getPrototypeOf(UploadContainer)).call(this, props));
+
+    _this.state = {
+      sort: ''
+    };
+    return _this;
   }
 
   _createClass(UploadContainer, [{
@@ -50092,10 +50125,35 @@ var UploadContainer = function (_Component) {
   }, {
     key: 'render',
     value: function render() {
+      var _this2 = this;
+
+      var sortAsc = function sortAsc() {
+        var sortPhotos = _this2.props.sortPhotos;
+
+        sortPhotos('asc');
+        _this2.setState({ sort: 'asc' });
+      };
+      var sortDesc = function sortDesc() {
+        var sortPhotos = _this2.props.sortPhotos;
+
+        sortPhotos('desc');
+        _this2.setState({ sort: 'desc' });
+      };
+      var sort = this.state.sort;
 
       return _react2.default.createElement(
         'div',
         { className: 'col-md-12' },
+        _react2.default.createElement(
+          'button',
+          { className: 'btn btn-primary', disabled: sort === 'asc', onClick: sortAsc },
+          '\uC624\uB984'
+        ),
+        _react2.default.createElement(
+          'button',
+          { className: 'btn btn-primary', disabled: sort === 'desc', onClick: sortDesc },
+          '\uB0B4\uB9BC'
+        ),
         _react2.default.createElement(
           _reactDropzone2.default,
           { onDrop: this.onDrop.bind(this), className: 'box_upload' },
@@ -50104,7 +50162,7 @@ var UploadContainer = function (_Component) {
             { className: 'desc_upload' },
             '\uC774\uBBF8\uC9C0 \uD30C\uC77C\uC744 \uC774\uACF3\uC5D0 \uB04C\uC5B4 \uB123\uAC70\uB098',
             _react2.default.createElement('br', null),
-            '\uD074\uB9AD\uD558\uC5EC \uD30C\uC77C\uC744 \uC120\uD0DD \uD574 \uC8FC\uC138\uC694'
+            '\uD074\uB9AD\uD558\uC5EC \uD30C\uC77C\uC744 \uC120\uD0DD \uD574 \uC8FC\uC138\uC694.'
           )
         )
       );

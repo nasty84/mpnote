@@ -2,6 +2,8 @@ import express from 'express';
 import Card from '../models/card';
 import * as mongoosePagination from 'mongoose-pagination'
 import mongoose from 'mongoose';
+import fs from 'fs';
+import Path from 'path';
 
 const router = express.Router();
 
@@ -128,10 +130,28 @@ router.put('/:card_id', function(req, res){
   })
 });
 
+const deleteForderRecursive = function(path) {
+  if(fs.existsSync(path)) {
+    fs.readdirSync(path).forEach((file, index) => {
+      const curPath = Path.join(path, file);
+      if(fs.lstatSync(curPath).isDirectory()){
+        deleteForderRecursive(curPath);
+      }else{
+        fs.unlinkSync(curPath);
+      }
+    });
+    fs.rmdirSync(path);
+  }
+}
+
 router.delete('/:card_id', function(req, res){
   Card.remove({ _id: req.params.card_id }, function(err, output){
         if(err) return res.status(500).json({ error: "database failure" });
-
+        fs.exists('./public/static/attache/'+req.params.card_id,function(flag){
+          if(flag){
+            deleteForderRecursive('./public/static/attache/'+req.params.card_id);
+          }
+        });
         /* ( SINCE DELETE OPERATION IS IDEMPOTENT, NO NEED TO SPECIFY )
         if(!output.result.n) return res.status(404).json({ error: "book not found" });
         res.json({ message: "book deleted" });
